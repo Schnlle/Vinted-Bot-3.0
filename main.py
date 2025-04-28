@@ -1,8 +1,12 @@
 import requests
 import time
+import os
+from dotenv import load_dotenv
 
-ACCESS_TOKEN = "eyJraWQiOiJFNTdZZHJ1SHBsQWp1MmNObzFEb3JIM2oyN0J1NS1zX09QNVB3UGlobjVNIiwiYWxnIjoiUFMyNTYifQ.eyJhcHBfaWQiOjQsImNsaWVudF9pZCI6IndlYiIsImF1ZCI6ImZyLmNvcmUuYXBpIiwiaXNzIjoidmludGVkLWlhbS1zZXJ2aWNlIiwic3ViIjoiMTA3NzkxMzA4IiwiaWF0IjoxNzQ1ODQxNzcyLCJzaWQiOiI5ZjE4YTVlOS0xNzQ1Njk3NjE0Iiwic2NvcGUiOiJ1c2VyIiwiZXhwIjoxNzQ1ODQ4OTcyLCJwdXJwb3NlIjoiYWNjZXNzIiwiYWN0Ijp7InN1YiI6IjEwNzc5MTMwOCJ9LCJhY2NvdW50X2lkIjo3Njc2NDg0MX0.ow2S-JrWREsMXDW8izHYbUqiNIUtDr5GimZ4JyOOKYVL0Jb4kBjoESB9j9aKHDDiF5Sl3bLMvgZrEIKKZOTqGhayQ2hENCxuvOyAG8lQ536w1sSW3odCvA5xVKHFbJM5u8_Up4MYWiOKmqxZHfwkPJDkc0Mn8h1fPVKA2ogHZLiHFfK4k5TedIy9YCQBjvG8yRtXIJrK-dCMeF54TNbQSKgUe15_VD0nMD4YWDGiNgvYUzkhGamJRl7evyDZCUAOGp3E3bmKgOQTzi4OkSLgdgg-DYTOZzVQRbb6PVg8rZVptx3euPbDZ0UFQcNgC_L6tLBS-wAWv3dQTj0fJJBgtg"
-REFRESH_TOKEN = "eyJraWQiOiJFNTdZZHJ1SHBsQWp1MmNObzFEb3JIM2oyN0J1NS1zX09QNVB3UGlobjVNIiwiYWxnIjoiUFMyNTYifQ.eyJhcHBfaWQiOjQsImNsaWVudF9pZCI6IndlYiIsImF1ZCI6ImZyLmNvcmUuYXBpIiwiaXNzIjoidmludGVkLWlhbS1zZXJ2aWNlIiwic3ViIjoiMTA3NzkxMzA4IiwiaWF0IjoxNzQ1ODQxNzcyLCJzaWQiOiI5ZjE4YTVlOS0xNzQ1Njk3NjE0Iiwic2NvcGUiOiJ1c2VyIiwiZXhwIjoxNzQ2NDQ2NTcyLCJwdXJwb3NlIjoicmVmcmVzaCIsImFjdCI6eyJzdWIiOiIxMDc3OTEzMDgifSwiYWNjb3VudF9pZCI6NzY3NjQ4NDF9.W4RZqwMuU0Xfv0srwgVlHjji6T9A1fayY6P0xzacis9fy3LJNfkdL7tdOemo_Lcpq7gvM9qNxS1aM05_PGmCH8ylh0W44F_uEfoMn5Mr-cooqGJnFlEYxJXeT5a387WA7xYZr664q75XGq05lN5Vz-yQRDkT1tgE59WWhkxeW1Gi1zPHWcwD9C2to3_VX0H2biG1j2WYbOpOMzrbWFHV01ImVoha7MdKDshTxgcWR_LWXBJyk42CDcI3y92L_6P5TMweKI_2u9ebJVRrOx1hMmqB1KhidU0mcHBj8PA6aXukRWQGAiATZbVkvvikFZC5utcHZLIqgghoERpQK_W2Aw"
+load_dotenv()
+
+ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
+REFRESH_TOKEN = os.getenv("REFRESH_TOKEN")
 
 SEARCH_URL = "https://www.vinted.de/api/v2/catalog/items"
 TOKEN_URL = "https://www.vinted.de/oauth/token"
@@ -41,10 +45,11 @@ def refresh_access_token():
         print("Fehler beim Erneuern des Tokens:", response.status_code)
 
 def search_items():
-    response = requests.get(SEARCH_URL, headers={
+    headers = {
         "Authorization": f"Bearer {ACCESS_TOKEN}",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-    }, params=SEARCH_PARAMS)
+    }
+    response = requests.get(SEARCH_URL, headers=headers, params=SEARCH_PARAMS)
     if response.status_code == 401:
         refresh_access_token()
         return []
